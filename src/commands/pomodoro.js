@@ -1,19 +1,28 @@
-let timerLeft = 25 * 60;
-let timerId, minutes, seconds;
+let minutes, seconds;
+let timerCount = 0;
 
-function timer(message, prefix, sentMessage) {
-    timerId = setInterval(async () => {
-        timerLeft--;
-        minutes = Math.floor(timerLeft / 60);
-        seconds = timerLeft % 60;
+function startTimer (message, sentMessage, timer) {
+    timer *= 60;
+
+    let timerId = setInterval(async () => {
+        timer--;
+        minutes = Math.floor(timer / 60);
+        seconds = timer % 60;
 
         await message.channel.messages.fetch(sentMessage.id)
             .then((sentMessage) => sentMessage.edit(`⏰ ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`));
 
-        if (timerLeft === 0) {
+        if (timer === 0) {
             clearInterval(timerId);
             message.channel.send(`concluído +1 🏆`);
-            pause(message, prefix);
+
+            if (timerCount < 4) {
+                let nextTimerLeft = (timerCount % 2 === 0) ? 25 : 5;
+                setTimeout(() => {
+                    message.channel.send(`Sessão finalizada: <@&${1062824838420500520n}>`)
+                    startTimer(message, sentMessage, nextTimerLeft)
+                }, 2000);
+            }
         }
     }, 1000);
 }
@@ -22,7 +31,7 @@ export async function pomodoro(message, prefix) {
     if (message.content === prefix+'pomodoro') {
         message.channel.send(`🍅 pomodoro 25/5`);
 
-        let sentMessage = await message.channel.send(`⏰ 25:00`);
-        timer(message, prefix, sentMessage);
+        var sentMessage = await message.channel.send(`⏰ 25:00`);
+        startTimer(message, sentMessage, 25);
     }
 }
