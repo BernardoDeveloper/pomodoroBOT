@@ -16,11 +16,13 @@ function startTimer (message, sentMessage, timer) {
             clearInterval(timerId);
             message.channel.send(`concluído +1 🏆`);
 
+            timerCount++;
             if (timerCount < 4) {
                 let nextTimerLeft = (timerCount % 2 === 0) ? 25 : 5;
                 setTimeout(() => {
-                    message.channel.send(`Sessão finalizada: <@&${1062824838420500520n}>`)
-                    startTimer(message, sentMessage, nextTimerLeft)
+                    console.log(nextTimerLeft ? 'Pausa ⏸' : 'Foco ▶');
+                    message.channel.send(`Sessão finalizada: <@&${1062824838420500520n}>\n$Pausa ⏸`);
+                    startTimer(message, sentMessage, nextTimerLeft);
                 }, 2000);
             }
         }
